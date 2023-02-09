@@ -1,5 +1,8 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:5000/";
+// const BASE_URL = "http://localhost:5000/";
+const BASE_URL = "https://prodezign-backend.onrender.com/";
+
+
 
 const getBootcamp = async (payload) => {
   const response = await axios.get(BASE_URL + "bootcamp");
