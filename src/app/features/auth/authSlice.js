@@ -6,11 +6,10 @@ const local_token = JSON.parse(localStorage.getItem("prodezign_user_token"));
 console.log("local token below");
 console.log(local_token);
 
-
 const initialState = {
   account: null,
   token: !local_token ? null : local_token,
-  enrollments: [],
+
   isVerified: false,
   current_action: "",
   loading: false,
@@ -19,13 +18,13 @@ const initialState = {
   message: "",
 
   current_view: "signup",
-
-  // current_view: {
-  //   view: "signup",
-  //   title_text: "Create An Account",
-  //   switch_text: "Already have an account ? Login",
-  //   button_text: "Create Account",
-  // },
+  enrollments_api: {
+    loading: false,
+    success: false,
+    error: false,
+    message: "",
+  },
+  enrollments: [],
 
   read_user: {
     loading: false,
@@ -78,8 +77,6 @@ export const login = createAsyncThunk(
   }
 );
 
-
-
 export const verify = createAsyncThunk(
   "auth/verify",
   /// payload is a string
@@ -120,8 +117,25 @@ export const readUser = createAsyncThunk(
       return thunkAPI.rejectWithValue({
         status,
         message,
-        redirect
+        redirect,
       });
+    }
+  }
+);
+
+export const readEnrollments = createAsyncThunk(
+  "auth/readEnrollments",
+  async (payload, thunkAPI) => {
+    try {
+      return await authService.readEnrollments(payload);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -149,7 +163,7 @@ export const authSlice = createSlice({
       localStorage.removeItem("prodezign_user_token");
       state.account = null;
       state.token = null;
-      state.enrollments =  [];
+      state.enrollments = [];
     },
   },
   extraReducers: (builder) => {
@@ -193,6 +207,10 @@ export const authSlice = createSlice({
         state.account = action.payload.account;
         state.token = action.payload.token;
         state.enrollments = action.payload.enrollments;
+        // set the enrollment_api to success
+        state.enrollments_api.success = true;
+        state.enrollments_api.error = false;
+        state.enrollments_api.message = "";
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
@@ -232,15 +250,44 @@ export const authSlice = createSlice({
         state.read_user.loading = false;
         state.read_user.success = true;
         state.account = action.payload.account;
+
         state.enrollments = action.payload.data;
+
+        // set the enrollment_api to success
+        state.enrollments_api.success = true;
+        state.enrollments_api.error = false;
+        state.enrollments_api.message = "";
       })
       .addCase(readUser.rejected, (state, action) => {
-        console.log(action.payload)
+        console.log(action.payload);
         state.read_user.loading = false;
         state.read_user.error = true;
         state.account = null;
         state.message = action.payload.message;
         state.read_user.redirect = action.payload?.redirect;
+      })
+
+      .addCase(readEnrollments.pending, (state, action) => {
+        state.enrollments_api.loading = true;
+        state.enrollments_api.error = false;
+        state.enrollments_api.success = false;
+      })
+      .addCase(readEnrollments.fulfilled, (state, action) => {
+        state.enrollments_api.loading = false;
+        state.enrollments_api.success = true;
+        state.enrollments = action.payload;
+        state.enrollments_api.message = "";
+        if (action.payload.length < 1) {
+          state.enrollments_api.message =
+            "You have not enrolled in any bootcamp yet. Its super easy, click below to get started";
+        }
+      })
+      .addCase(readEnrollments.rejected, (state, action) => {
+        console.log(action.payload);
+        state.enrollments_api.loading = false;
+        state.enrollments_api.error = true;
+        state.enrollments = [];
+        state.message = action.payload;
       });
   },
 });

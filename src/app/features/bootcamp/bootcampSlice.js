@@ -9,6 +9,7 @@ const initialState = {
     error: false,
     message: "",
   },
+
   current_bootcamp: {},
   bootcamps: [],
   filtered_bootcamps: {

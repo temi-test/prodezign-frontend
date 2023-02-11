@@ -37,7 +37,6 @@ function BootCampClass() {
     (state) => state.bootcamp
   );
   const { token, account, enrollments } = useSelector((state) => state.auth);
-
   const [viewedBootcamp, setViewedBootcamp] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -64,38 +63,30 @@ function BootCampClass() {
       redirect("/init");
       return;
     }
+    // after signup check if user has enrolled in the class or not
+    // checkEnroll automatically calls initClass if all conditions are met
+    checkEnroll();
   };
 
   const checkEnroll = () => {
-    let index = enrollments.map((item) => item._id).indexOf(id);
-    if (index >= 0) {
-      // redirect to the the class for this bootcamp
-      return redirect("/bootcamp/" + id + "/class");
+    // console.log("checking enroll");
+    let index = enrollments.map((item) => item.bootcamp_id._id).indexOf(id);
+    if (index < 0) {
+      // redirect to the the enroll page for this bootcamp
+      redirect("/bootcamps/" + id + "/enroll");
+      return;
     }
-    // redirect to the payment
-    redirect("/bootcamp/" + id + "/enroll");
-    // if user token exist....check if user is signed in or not
-    // if user not signed in then sign user in based on the token
-    // if token is malformed or matches no account navigate to the auth for the user to login
-    // if login is successful then check if the course in part of the users courses
-    // if it is then move to the bootcamp training page else move to the payment page
+    // after checkEnroll initiate the class if all the checkEnroll conditions are met
+    initClass(index);
   };
 
-  const initClass = () => {
-    /// get the current bootcamp from the array of bootcamps
-    /// if it exits display it here
-    // if not then request from server again.....means user probably went through the url route
-    let index = enrollments.map((item) => item._id).indexOf(id);
-    if (index < 0) {
-      /// dispatch to get details from server
-      console.log("getting current bootcamp from server");
-      dispatch(getSingleBootcamp(id));
-    } else {
-      console.log("getting current bootcamp from state");
-      let item = cloneDeep(enrollments[index]);
-      setViewedBootcamp(item);
-      setLoading(false);
-    }
+  const initClass = (index) => {
+    //  if user is enrolled in the bootcamp class then....intialize the bootcamp class so the
+    // class info can be visiblel on the ui for the user
+    // console.log("initing class");
+    let item = cloneDeep(enrollments[index]);
+    setViewedBootcamp(item);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -105,20 +96,12 @@ function BootCampClass() {
       redirect("/404");
       return;
     }
-
     // if id exist, then check if the user is signed in to be able to access this class in the first place
     checkSignedin();
-
-    // after signup check if user has enrolled inthe class or not
-    checkEnroll();
-
-    //  if user is enrolled in the bootcamp class then....intialize the bootcamp class so the
-    // class info can be visiblel on the ui for the user
-    initClass();
   }, []);
 
   useEffect(() => {
-    console.log("read single effect");
+    // console.log("read single effect");
     // If success while reading the product details from server
     // update the ui states
     if (bootcamp_api.loading === true) {

@@ -8,17 +8,17 @@ import HeaderLink from "../navigation/HeaderLink";
 
 function Header() {
   const redirect = useRedirect();
-  const confirmLogout = useAuth()
+  const confirmLogout = useAuth();
   const { token, account, enrollments } = useSelector((state) => state.auth);
 
   const authAction = () => {
     if (account) {
       // logout
-      console.log("account should logout")
+      console.log("account should logout");
       confirmLogout();
       return;
     }
-    redirect("/init")
+    redirect("/init");
   };
 
   return (
@@ -41,11 +41,18 @@ function Header() {
         <HeaderLink name="Bootcamps" link="/bootcamps" />
         <HeaderLink name="Works" link="/works" />
         <HeaderLink name="About" link="/about" />
+
+        <HeaderLink name="My Courses" link="/enrolled-bootcamps" />
       </Flex>
 
-      <Button bg={account ? "red.500" : "blue.500"} color="white" size="lg" onClick={()=> {
-        authAction();
-      }}>
+      <Button
+        bg={account ? "red.500" : "blue.500"}
+        color="white"
+        size="lg"
+        onClick={() => {
+          authAction();
+        }}
+      >
         {account ? "Logout" : "Signin"}
       </Button>
     </Flex>

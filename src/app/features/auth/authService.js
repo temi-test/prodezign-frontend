@@ -1,6 +1,6 @@
 import axios from "axios";
-// const BASE_URL = "http://localhost:5000/";
-const BASE_URL = "https://prodezign-backend.onrender.com/";
+const BASE_URL = "http://localhost:5000/";
+// const BASE_URL = "https://prodezign-backend.onrender.com/";
 
 //Register User
 const register = async (payload) => {
@@ -38,11 +38,23 @@ const readUser = async (payload) => {
   return response.data;
 };
 
+const readEnrollments = async (payload) => {
+  console.log("payload is below")
+  console.log(payload)
+ const user = payload.token;
+  const response = await axios.get(BASE_URL + "bootcamp/enrollment/"+payload.id, {
+    headers: { Authorization: `Bearer ${user}` },
+  });
+
+  return response.data;
+};
+
 const authService = {
   register,
   login,
   verify,
   readUser,
+  readEnrollments,
 };
 
 export default authService;

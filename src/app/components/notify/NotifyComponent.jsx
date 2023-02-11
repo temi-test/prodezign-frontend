@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { FiAlertCircle } from "react-icons/fi";
 import { capitalize } from "lodash";
 
-function NotifyComponent({ tryAgain, status, title, message, location }) {
+function NotifyComponent({ tryAgain, btnText, status, title, message, location }) {
   // status signifies the status of notify wether success, error, loading, confirm
   // location signifies the location either modal or page
 
@@ -27,33 +27,50 @@ function NotifyComponent({ tryAgain, status, title, message, location }) {
   const LOCATION_PAGE = "page";
   const LOCATION_MODAL = "modal";
   const STATUS_CONFIRM = "confirm";
+  const STATUS_ERROR = "error";
+  const STATUS_EMPTY = "empty";
+  const STATUS_404 = "404";
 
   const [titleSize, setTitleSize] = useState("");
   const [messageSize, setMessageSize] = useState("");
   const [messageWidth, setMessageWidth] = useState("");
+  const [contentMarginTop, setContentMarginTop] = useState("0px");
+
   const [isConfirm, setIsConfirm] = useState(false);
 
   const dispatch = useDispatch();
   const { overlay, confirmed } = useSelector((state) => state.overlay);
-  
 
   const default_message =
     "Uh oh. It looks like you've somehow managed to arrive at a termina with no rails leading here. Please click the button below to go backto the homepage";
   useEffect(() => {
     if (location === LOCATION_PAGE) {
-      setTitleSize("2xl");
+      setTitleSize("xl");
       setMessageSize("20px");
-      setMessageWidth("50%")
+      setMessageWidth("50%");
     } else {
       setTitleSize("lg");
       setMessageSize("18px");
-      setMessageWidth("100%")
+      setMessageWidth("100%");
       // if its location modal check if the view of the overlay is
       if (overlay.view === STATUS_CONFIRM) {
         setIsConfirm(true);
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    if (status === STATUS_CONFIRM) {
+      // setTitleSize("2xl");
+      // setMessageSize("20px");
+      // setMessageWidth("50%");
+      setContentMarginTop("16px");
+    } else if (status === STATUS_ERROR) {
+      setContentMarginTop("-40px");
+    } else if (status === STATUS_EMPTY) {
+      setContentMarginTop("16px");
+    }
+  }, [status]);
 
   return (
     <Box w="100%">
@@ -65,11 +82,15 @@ function NotifyComponent({ tryAgain, status, title, message, location }) {
           <LottieComponent type={!status ? overlay.view : status} />
         )}
       </Flex>
-      <Box mt="16px">
-        <Heading size={titleSize} textAlign="center" fontWeight="400" mb="10px">
+      <Box
+        //  mt="16px"
+        // mt="-40px"
+        mt={contentMarginTop}
+      >
+        <Heading size={titleSize} textAlign="center" fontWeight="400" mb="16px">
           {!title ? capitalize(overlay.view) : title}
         </Heading>
-      
+
         <Center>
           <Text textAlign="center" fontSize={messageSize} w={messageWidth}>
             {!message ? overlay.message : message}
@@ -83,14 +104,14 @@ function NotifyComponent({ tryAgain, status, title, message, location }) {
               bg="black"
               color="white"
               size="lg"
-              mt="30px"
+              mt="20px"
               onClick={() => {
                 if (tryAgain) {
                   tryAgain();
                 }
               }}
             >
-              TryAgain
+              {btnText ? btnText : "Try Again"}
             </Button>
           </Center>
         )}
@@ -112,9 +133,9 @@ function NotifyComponent({ tryAgain, status, title, message, location }) {
                 bg="red.500"
                 color="white"
                 onClick={() => {
-                    // reset the overlay state... this close the overlay
-                    dispatch(setOverlay(true));
-                    // set the confirmed state to true
+                  // reset the overlay state... this close the overlay
+                  dispatch(setOverlay(true));
+                  // set the confirmed state to true
                   dispatch(setConfirmed(true));
                 }}
               >

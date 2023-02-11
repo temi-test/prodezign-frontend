@@ -16,6 +16,7 @@ import BootCampClass from "./BootCampClass";
 import BootCampEnroll from "./BootCampEnroll";
 import AnimatedPage from "./AnimatedPage";
 import { useState } from "react";
+import EnrolledBootCamps from "./EnrolledBootCamps";
 
 function AppRoutes() {
   const location = useLocation();
@@ -70,6 +71,15 @@ function AppRoutes() {
         element={
           <AnimatedPage>
             <BootCamps />
+          </AnimatedPage>
+        }
+      />
+
+      <Route
+        path="/enrolled-bootcamps"
+        element={
+          <AnimatedPage>
+            <EnrolledBootCamps />
           </AnimatedPage>
         }
       />

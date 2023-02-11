@@ -33,6 +33,8 @@ import GoalsSection from "../components/GoalsSection";
 import ServicesSection from "../components/ServicesSection";
 import p3 from "../images/p3.jpg";
 import Typewriter from "../components/Typewriter";
+import NotifyComponent from "../components/notify/NotifyComponent";
+import BootcampSection from "../components/bootcamps.jsx/BootcampSection";
 
 function Home() {
   const dispatch = useDispatch();
@@ -74,7 +76,13 @@ function Home() {
       ) : null}
       {bootcamp_api.error && (
         <Center minH="100vh">
-          <Error tryAgain={tryAgain} />
+          <NotifyComponent
+            title="Error"
+            status="error"
+            message="There was an error while getting the resurce. Please try again"
+            location="page"
+            tryAgain={tryAgain}
+          />
         </Center>
       )}
 
@@ -114,8 +122,14 @@ function Home() {
                 </Text>
               </Box>
               <Box pt="120px" ps="30px">
-              
-                  <Image bg="pink.500" h="400px" w="100%" borderRadius="10px" src={p3} objectFit="cover" />
+                <Image
+                  bg="pink.500"
+                  h="400px"
+                  w="100%"
+                  borderRadius="10px"
+                  src={p3}
+                  objectFit="cover"
+                />
               </Box>
             </Grid>
             {/* <SimpleGrid columns={2}>
@@ -155,65 +169,10 @@ function Home() {
             </SimpleGrid> */}
           </Box>
 
-          <Box p="50px 100px">
-            <Tabs>
-              <TabList>
-                <Tab ps="0px" me={4} pb="25px">
-                  Recent Courses
-                </Tab>
-                <Tab me={4} pb="25px">
-                  Web
-                </Tab>
-                <Tab me={4} pb="25px">
-                  Ui/UX
-                </Tab>
-                <Tab me={4} pb="25px">
-                  Product
-                </Tab>
-                <Tab me={4} pb="25px">
-                  Graphics
-                </Tab>
-              </TabList>
-
-              <TabPanels pt="30px">
-                <TabPanel p="0px">
-                  <SimpleGrid columns={4} spacing={3}>
-                    {bootcamps.map((item) => (
-                      <CourseItem key={item._id} payload={item} />
-                    ))}
-                  </SimpleGrid>
-                </TabPanel>
-                <TabPanel p="0px">
-                  <SimpleGrid columns={4} spacing={3}>
-                    {filtered_bootcamps.web.map((item) => (
-                      <CourseItem key={item._id} payload={item} />
-                    ))}
-                  </SimpleGrid>
-                </TabPanel>
-                <TabPanel p="0px">
-                  <SimpleGrid columns={4} spacing={3}>
-                    {filtered_bootcamps.ui.map((item) => (
-                      <CourseItem key={item._id} payload={item} />
-                    ))}
-                  </SimpleGrid>
-                </TabPanel>
-                <TabPanel p="0px">
-                  <SimpleGrid columns={4} spacing={3}>
-                    {filtered_bootcamps.product.map((item) => (
-                      <CourseItem key={item._id} payload={item} />
-                    ))}
-                  </SimpleGrid>
-                </TabPanel>
-                <TabPanel>
-                  <SimpleGrid columns={4} spacing={3}>
-                    {filtered_bootcamps.graphics.map((item) => (
-                      <CourseItem key={item._id} payload={item} />
-                    ))}
-                  </SimpleGrid>
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Box>
+          <BootcampSection
+            list={bootcamps}
+            filtered_list={filtered_bootcamps}
+          />
 
           <ServicesSection />
 

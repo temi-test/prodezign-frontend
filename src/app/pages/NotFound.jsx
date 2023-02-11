@@ -1,16 +1,17 @@
 import { Center } from "@chakra-ui/react";
 import React from "react";
-import Footer from "../components/navigation/Footer";
-import Error from "../components/notify/Error";
-
+import NotifyComponent from "../components/notify/NotifyComponent";
 function NotFound() {
   return (
     <React.Fragment>
       <Center minH="100vh">
-        <Error />
+        <NotifyComponent
+          title="Not Found"
+          status="404"
+          message="The resource you were trying to access does not exist."
+          location="page"
+        />
       </Center>
-    
-      
     </React.Fragment>
   );
 }
