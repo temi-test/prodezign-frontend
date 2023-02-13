@@ -8,7 +8,7 @@ import HeaderLink from "../navigation/HeaderLink";
 
 function Header() {
   const redirect = useRedirect();
-  const confirmLogout = useAuth();
+  const {confirmLogout} = useAuth();
   const { token, account, enrollments } = useSelector((state) => state.auth);
 
   const authAction = () => {

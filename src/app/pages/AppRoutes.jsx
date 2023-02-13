@@ -17,6 +17,7 @@ import BootCampEnroll from "./BootCampEnroll";
 import AnimatedPage from "./AnimatedPage";
 import { useState } from "react";
 import EnrolledBootCamps from "./EnrolledBootCamps";
+import RequireRedirect from "../components/auth/RequireRedirect";
 
 function AppRoutes() {
   const location = useLocation();
@@ -108,6 +109,33 @@ function AppRoutes() {
         }
       />
 
+      <Route element={<RequireRedirect />}>
+        <Route
+          path="/auth"
+          element={
+            <AnimatedPage>
+              <Auth />
+            </AnimatedPage>
+          }
+        >
+          <Route
+            index
+            element={
+              <Navigate
+                replace
+                to="/auth/signup"
+                state={{
+                  prevPathname: prev,
+                }}
+              />
+            }
+          />
+          <Route path="/auth/signup" element={<SignupLogin />} />
+          <Route path="/auth/login" element={<SignupLogin />} />
+          <Route path="/auth/verify" element={<Verify />} />
+        </Route>
+      </Route>
+
       <Route
         path="/init"
         element={
@@ -116,22 +144,6 @@ function AppRoutes() {
           </AnimatedPage>
         }
       />
-
-      <Route
-        path="/auth"
-        // location={location}
-        // key={location.pathname}
-        element={
-          <AnimatedPage>
-            <Auth />
-          </AnimatedPage>
-        }
-      >
-        <Route index element={<Navigate replace to="/auth/signup" />} />
-        <Route path="/auth/signup" element={<SignupLogin />} />
-        <Route path="/auth/login" element={<SignupLogin />} />
-        <Route path="/auth/verify" element={<Verify />} />
-      </Route>
 
       <Route
         path="/404"
@@ -153,7 +165,6 @@ function AppRoutes() {
           />
         }
       />
-
       {/* <Route path="*" element={<Navigate to="/404" replace/>} /> */}
     </Routes>
   );

@@ -5,42 +5,31 @@ import FormError from "../forms/FormError";
 import CustomInputField from "../forms/CustomInputField";
 import TitleHeadings from "../headings/TitleHeadings";
 import { useState } from "react";
+import useAuth from "../../hooks/useAuth";
+import { FiLock, FiMail } from "react-icons/fi";
 
-function SignupLoginLg({ checkForm, formik, current_path, changeRoute }) {
-
-  const [title, setTitle] = useState("");
-  const [isSignup, setIsSignup] = useState(false);
-
-  useEffect(() => {
-    if (current_path === "/auth" || current_path === "/auth/signup") {
-      setTitle("Signup");
-      setIsSignup(true);
-    }else{
-      setTitle("Login")
-      setIsSignup(false);
-    }
-  }, [current_path]);
+function SignupLoginLg() {
+  const { changeRoute, form_content, form_error, changeFormError } = useAuth();
 
   return (
     <Center h="100vh">
       <Box w="50%" textAlign="start">
-        <TitleHeadings title={title} mb="10px" />
-        <Text mb="50px">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corrupti,
-          consequatur.
-        </Text>
+        <TitleHeadings title={form_content?.title} mb="10px" />
+        <Text mb="50px">{form_content?.message}</Text>
 
         <FormError
-          error={false}
-          // message={form_error.message}
-          // setFormError={changeFormError}
+          error={form_error.error}
+          message={form_error.message}
+          setFormError={changeFormError}
         />
-        {isSignup && (
+
+        {form_content.current === "signup" && (
           <CustomInputField
             type="text"
             name="name"
             label="Full Name"
             placeholder="Enter Full Name"
+            icon={<FiMail />}
           />
         )}
 
@@ -49,6 +38,8 @@ function SignupLoginLg({ checkForm, formik, current_path, changeRoute }) {
           name="email"
           label="Email"
           placeholder="Enter Email address"
+          icon={<FiMail />}
+          padding="0px 40px"
         />
 
         <CustomInputField
@@ -56,26 +47,24 @@ function SignupLoginLg({ checkForm, formik, current_path, changeRoute }) {
           name="password"
           label="Password"
           placeholder="Enter Password"
+          icon={<FiLock />}
+          padding="0px 40px"
         />
 
         <Button
-          text={current_path == "signup" ? "Create Account" : "Login"}
           width="100%"
           size="md"
           mt="10px"
-          formik={formik}
           type="submit"
-          handleClick={(formik) => {
-            checkForm(formik);
+          onClick={() => {
+            // checkForm(formik);
           }}
         >
-          {current_path === "/auth/signup" ? "Create Account" : "Login"}
+          {form_content?.button}
         </Button>
 
-        <Text mt="10px" onClick={changeRoute}>
-          {current_path === "/auth/signup"
-            ? "Already a member? Login"
-            : "Don't have an account ? Signup here"}
+        <Text mt="10px" onClick={changeRoute} cursor="pointer">
+          {form_content?.footer}
         </Text>
       </Box>
     </Center>

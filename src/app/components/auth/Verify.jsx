@@ -1,13 +1,6 @@
 import React, { useEffect } from "react";
 import { Box, Button, Center } from "@chakra-ui/react";
 
-import { Formik, useFormik } from "formik";
-import * as Yup from "yup";
-
-import {} from "react-icons";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { verify, reset } from "../../features/auth/authSlice";
 import LottieAnim from "../notify/LottieAnim";
 import lottieVerify from "../../lottie/verify-otp.json";
 import TitleHeadings from "../headings/TitleHeadings";
@@ -28,7 +21,6 @@ function Verify({ info_payload }) {
       <AuthWrapper>
         {({ formik, current_path, changeRoute, checkForm }) => (
           <React.Fragment>
-            <InfoToast payload={info_payload} />
 
             <Center h="100vh" p="0px 10px">
               <Box

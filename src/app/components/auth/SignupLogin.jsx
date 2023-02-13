@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import SignLoginMobile from "./SignupLoginMobile";
 import SignupLoginLg from "./SignupLoginLg";
 import AuthWrapper from "./AuthWrapper";
 import { useMediaQuery } from "@chakra-ui/react";
 
+
 function SignupLogin() {
-
-  const screenMobileSm = useMediaQuery({ query: "(min-device-width: 0px)" });
-  const screenMobileMd = useMediaQuery({ query: "(min-device-width: 375px)" });
-  const screenMobileLg = useMediaQuery({ query: "(min-device-width: 425px)" });
-  const screenTablet = useMediaQuery({ query: "(min-width: 768px)" });
-
   const screenLaptop = useMediaQuery({ query: "(min-width: 1024px)" });
   const screenLaptopLg = useMediaQuery({ query: "(min-width: 1300px)" });
   const isBigScreen = useMediaQuery({ query: "(min-device-width: 1824px)" });
@@ -18,22 +13,12 @@ function SignupLogin() {
   return (
     <React.Fragment>
       <AuthWrapper>
-        {({ formik, current_path, changeRoute, checkForm }) => (
+        {({ formik }) => (
           <React.Fragment>
             {screenLaptop || screenLaptopLg || isBigScreen ? (
-              <SignupLoginLg
-                formik={formik}
-                checkForm={checkForm}
-                changeRoute={changeRoute}
-                current_path={current_path}
-              />
+              <SignupLoginLg formik={formik} />
             ) : (
-              <SignLoginMobile
-                formik={formik}
-                checkForm={checkForm}
-                current_path={current_path}
-                changeRoute={changeRoute}
-              />
+              <SignLoginMobile formik={formik} />
             )}
           </React.Fragment>
         )}
